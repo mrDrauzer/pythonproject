@@ -1,6 +1,6 @@
 import datetime
-import masks
 
+from masks import get_mask_account, get_mask_card_number
 
 def mask_account_card(cards_accounts: str) -> str:
     """
@@ -16,10 +16,10 @@ def mask_account_card(cards_accounts: str) -> str:
         else:
             mask_cards_accounts += char
     if len(numbers) > 16:
-        mask_cards_accounts += masks.get_mask_account(numbers)
+        mask_cards_accounts += get_mask_account(numbers)
 
     else:
-        mask_cards_accounts += masks.get_mask_card_number(numbers)
+        mask_cards_accounts += get_mask_card_number(numbers)
     return mask_cards_accounts
 
 
