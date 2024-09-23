@@ -1,4 +1,9 @@
 def filter_by_state(list_operations, operation_status="EXECUTED"):
+    """
+    Принимает список словарей и опционально значение для ключа state (по умолчанию 'EXECUTED').
+    Функция возвращает новый список словарей, содержащий только те словари,
+    у которых ключ state соответствует указанному значению.
+    """
     try:
         list_operations_state = []
         key = {}
@@ -12,6 +17,11 @@ def filter_by_state(list_operations, operation_status="EXECUTED"):
 
 
 def sort_by_date(list_operations, ascending=False):
+    """
+    Принимает список словарей и необязательный параметр, задающий порядок сортировки (по умолчанию — убывание).
+    Функция возвращает новый список, отсортированный по дате (date).
+    """
+
     sort_by_date = sorted(list_operations, key=lambda x: x.get("date", 0), reverse=ascending)
     return sort_by_date
 
