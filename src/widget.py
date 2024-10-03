@@ -1,6 +1,6 @@
 import datetime
 
-from masks import get_mask_account, get_mask_card_number
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(cards_accounts: str) -> str:
@@ -28,7 +28,7 @@ def get_date(data_st: str) -> str:
     """
     Принимает на вход строку 2024-03-11T02:26:18.671407 и отдает корректный результат в формате ДД.ММ.ГГГГ
     В случаи некоректного вода возращает:
-    "Некорректный формат даты, укажите дату в формате день месяц год (ДД.ММ.ГГГГ)", "Cегодня", ДД.ММ.ГГГГ)
+    "Некорректный формат даты, укажите дату в формате день месяц год (ДД.ММ.ГГГГ)"
     """
     try:
         date_object = datetime.datetime.strptime(data_st, "%Y-%m-%dT%H:%M:%S.%f")
