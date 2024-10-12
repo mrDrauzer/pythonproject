@@ -2,6 +2,9 @@ import pytest
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+import pytest
+
 
 @pytest.fixture
 def namber_cart():
@@ -77,3 +80,114 @@ def test_sort_by_date_none():
                      {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12T21:27:25.241689'},
                      {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}]
     assert sort_by_date(test_data_in) == test_data_out
+
+
+
+
+
+def test_transaction_descriptions():
+    transactions = [
+        {"id": 1, "description": "Test1", "amount": 100},
+        {"id": 2, "description": "Test2", "amount": 200},
+        {"id": 3, "description": "Test3", "amount": 300}
+    ]
+    generator = transaction_descriptions(transactions)
+
+    assert next(generator) == "Test1"
+    assert next(generator) == "Test2"
+    assert next(generator) == "Test3"
+
+    with pytest.raises(StopIteration):
+        next(generator)
+
+
+def test_transaction_descriptions_empty_combination():
+    transactions = []
+    generator =  transaction_descriptions(transactions)
+
+    with pytest.raises(StopIteration):
+        next(generator)
+
+
+def test_transaction_description_missing_key():
+    transactions = [{"id": 1, "amount": 100}]
+
+    with pytest.raises(KeyError):
+        transaction_descriptions(transactions)
+
+
+
+def test_filter_by_currency_no_transaction():
+    transactions = []
+    currency_code = 'USD'
+    result = filter_by_currency(transactions, currency_code)
+    assert list(result) == []
+
+
+def test_filter_by_currency_single_transaction_same_currency():
+    transactions = [{"operationAmount": {"currency": {"code": 'USD'}}}]
+    currency_code = 'USD'
+    result = filter_by_currency(transactions, currency_code)
+    assert list(result) == transactions
+
+
+def test_filter_by_currency_single_transaction_different_currency():
+    transactions = [{"operationAmount": {"currency": {"code": 'EUR'}}}]
+    currency_code = 'USD'
+    result = filter_by_currency(transactions, currency_code)
+    assert list(result) == []
+
+
+def test_filter_by_currency_multiple_transactions():
+    transactions = [
+        {"operationAmount": {"currency": {"code": 'USD'}}},
+        {"operationAmount": {"currency": {"code": 'EUR'}}},
+        {"operationAmount": {"currency": {"code": 'JPY'}}}
+    ]
+    currency_code = 'JPY'
+    result = filter_by_currency(transactions, currency_code)
+    assert list(result) == [transactions[2]]
+
+
+def test_filter_by_currency_multiple_transactions_same_currency():
+    transactions = [
+        {"operationAmount": {"currency": {"code": 'USD'}}},
+        {"operationAmount": {"currency": {"code": 'USD'}}},
+        {"operationAmount": {"currency": {"code": 'USD'}}}
+    ]
+    currency_code = 'USD'
+    result = filter_by_currency(transactions, currency_code)
+    assert list(result) == transactions
+
+
+
+def test_card_number_generator_ascending():
+    # Test for ascending generated card numbers with default step
+    generator = card_number_generator(5, 7)
+    assert next(generator) == "0000 0000 0000 0005"
+    assert next(generator) == "0000 0000 0000 0006"
+    assert next(generator) == "0000 0000 0000 0007"
+
+
+def test_card_number_generator_descending():
+    # Test for descending generated card numbers with default step
+    generator = card_number_generator(7, 5)
+    assert next(generator) == "0000 0000 0000 0007"
+    assert next(generator) == "0000 0000 0000 0006"
+    assert next(generator) == "0000 0000 0000 0005"
+
+
+def test_card_number_generator_step():
+    # Test for ascending generated card numbers with custom step
+    generator = card_number_generator(5, 15, 5)
+    assert next(generator) == "0000 0000 0000 0005"
+    assert next(generator) == "0000 0000 0000 0010"
+    assert next(generator) == "0000 0000 0000 0015"
+
+
+def test_card_number_generator_single_digit():
+    # Test for ascending generated card numbers with single digit
+    generator = card_number_generator(9, 9)
+    assert next(generator) == "0000 0000 0000 0009"
+    with pytest.raises(StopIteration):
+        next(generator)
