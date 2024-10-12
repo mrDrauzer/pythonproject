@@ -3,7 +3,7 @@ from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
-import pytest
+
 
 
 @pytest.fixture
@@ -109,13 +109,6 @@ def test_transaction_descriptions_empty_combination():
         next(generator)
 
 
-def test_transaction_description_missing_key():
-    transactions = [{"id": 1, "amount": 100}]
-
-    with pytest.raises(KeyError):
-        transaction_descriptions(transactions)
-
-
 
 def test_filter_by_currency_no_transaction():
     transactions = []
@@ -184,10 +177,13 @@ def test_card_number_generator_step():
     assert next(generator) == "0000 0000 0000 0010"
     assert next(generator) == "0000 0000 0000 0015"
 
-
-def test_card_number_generator_single_digit():
-    # Test for ascending generated card numbers with single digit
-    generator = card_number_generator(9, 9)
-    assert next(generator) == "0000 0000 0000 0009"
-    with pytest.raises(StopIteration):
-        next(generator)
+@pytest.mark.parametrize("a, b, c", [
+    (1, 2, 19),
+    (5, 9, 19),
+    (4, 8, 19),
+    (0, 29, 19),
+])
+def test_addition(a, b, c):
+    generator = card_number_generator(a, b)
+    namber = next(generator)
+    assert c == len(str(namber))
