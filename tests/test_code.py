@@ -1,11 +1,10 @@
 import pytest
-import pytest_cov
-import pytest_html
-import slug
+
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+from src.decorators import log, logfile
 
 
 @pytest.fixture
@@ -204,3 +203,12 @@ def test_addition(a, b, c):
     generator = card_number_generator(a, b)
     namber = next(generator)
     assert c == len(str(namber))
+
+
+@log()
+def dummy_function(x, y):
+    return x + y
+
+@logfile
+def dummy_function(x, y):
+    return x + y
