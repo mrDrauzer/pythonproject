@@ -218,11 +218,13 @@ def my_function_2():
 
 def test_log_output(capsys):
     my_function_2()
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             captured = capsys.readouterr()
             assert captured.out == f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
+
 
 @log()
 @log("log.txt")
