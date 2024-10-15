@@ -1,10 +1,16 @@
 import pytest
+import unittest
+import sys
 
+from functools import wraps
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from src.decorators import log, logfile
+
+# from unittest.mock import patch
+# from StringIO import StringIO
 
 
 @pytest.fixture
@@ -206,9 +212,27 @@ def test_addition(a, b, c):
 
 
 @log()
-def dummy_function(x, y):
-    return x + y
+def my_function_2():
+    return
 
-@logfile
-def dummy_function(x, y):
-    return x + y
+
+def test_log_output(capsys):
+    my_function_2()
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            captured = capsys.readouterr()
+            assert captured.out == f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
+
+@log()
+@log("log.txt")
+def my_function_1():
+    return
+
+
+def test_log_file(capsys):
+    my_function_1()
+    captured = capsys.readouterr()
+    with open("log.txt", "r") as file:
+        file_content = file.read()
+        assert file_content in captured
