@@ -222,6 +222,9 @@ def test_log_output(capsys):
         def wrapper(*args, **kwargs):
             captured = capsys.readouterr()
             assert captured.out == f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
+        return wrapper
+
+    return decorator
 
 
 def test_log_file(capsys):
