@@ -211,12 +211,10 @@ def test_addition(a, b, c):
     assert c == len(str(namber))
 
 
-@log()
-def my_function_2():
-    return
-
-
 def test_log_output(capsys):
+    @log()
+    def my_function_2():
+        return
     my_function_2()
 
     def decorator(func):
@@ -226,15 +224,68 @@ def test_log_output(capsys):
             assert captured.out == f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
 
 
-@log()
-@log("log.txt")
-def my_function_1():
-    return
-
-
 def test_log_file(capsys):
+    @log()
+    @log("log.txt")
+    def my_function_1():
+        return
+
     my_function_1()
     captured = capsys.readouterr()
     with open("log.txt", "r") as file:
         file_content = file.read()
         assert file_content in captured
+
+
+def test_correct_log_in_file():
+    @log(filename="test.log")
+    def my_function(x, y):
+        """Функция складывает два значения"""
+        return x + y
+
+    my_function(1, 2)
+    with open("test.log") as f:
+        row = f.read().split("\n")[0]
+    assert row == "Calling function my_function with args (1, 2) and kwargs {}"
+
+
+def test_exception_log(capsys):
+    @log(2)
+    def my_function(x, y):
+        """Функция складывает два значения"""
+        return x + y
+
+    my_function(1, 2)
+    captured = capsys.readouterr()
+    assert captured.out == ""
+
+
+def test_exception_ZeroDivisionError():
+    with pytest.raises(ZeroDivisionError):
+
+        @log("test.log")
+        def my_function_2(x, y):
+            """Функция складывает два значения"""
+            return x / y
+
+        my_function_2(1, 0)
+        with open("test.log") as f:
+            row = f.read().split("\n")[0]
+        assert row == "Calling function my_function with args (1, 2) and kwargs {}"
+
+
+def test_exception_typeerror():
+    with pytest.raises(TypeError):
+
+        @log("log.txt")
+        def my_sum(a, b, c):
+            a + b + c
+            return
+
+        my_sum(1, 0)
+        with open("log.txt") as f:
+            row = f.read().split("\n")[0]
+        assert row == """Calling function my_sum with args (1, 0) and kwargs {}
+Error: my_sum() missing 1 required positional argument: 'c'
+Input parameters: (1, 0) {}"""
+
