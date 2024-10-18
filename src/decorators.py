@@ -2,6 +2,7 @@ from functools import wraps
 
 
 def logfile(func):
+    """Ведет лог функции в консоль и файл"""
     @wraps(func)
     def decorator(*args, **kwargs):
         result = func(*args, **kwargs)
@@ -18,6 +19,7 @@ def logfile(func):
 
 
 def log(filename=None):
+    """Ведет лог функции в консоль либо файл"""
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -44,3 +46,4 @@ def log(filename=None):
         return wrapper
 
     return decorator
+
