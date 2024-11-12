@@ -18,4 +18,4 @@ def open_json(local_json_file = r'c:\python\project\home_work\data\operations.js
         return "[]"
 
 
-print(open_json(r'c:\python\project\home_work\data\operations.json'))
+#print(open_json(r'c:\python\project\home_work\data\operations.json'))
