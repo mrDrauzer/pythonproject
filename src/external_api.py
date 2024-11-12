@@ -5,7 +5,7 @@ import requests
 import json
 from json import JSONDecodeError
 
-def sum_transaction(local_json_file, coin = "RUB") -> float:
+def sum_transaction(local_json_file, coin="RUB") -> float:
     """Возрощат сумму транзакция в указанной волюье по умолчанию в рублях"""
     load_dotenv(".env")
     api_key = os.getenv("API_KEY")
