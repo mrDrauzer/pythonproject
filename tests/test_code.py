@@ -2,12 +2,16 @@ import pytest
 import unittest
 import sys
 
+
+from unittest.mock import patch
 from functools import wraps
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from src.decorators import log, logfile
+from src.utils import open_json
+from src.external_api import sum_transaction
 
 # from unittest.mock import patch
 # from StringIO import StringIO
@@ -292,3 +296,15 @@ def test_exception_typeerror():
 Error: my_sum() missing 1 required positional argument: 'c'
 Input parameters: (1, 0) {}"""
 
+def test_open_json():
+    row = open_json(1)
+    assert row == "[]"
+
+def test_sum_transaction():
+    row = sum_transaction(1)
+    assert row == 0.0
+
+@patch('requests.get')
+def test_sum_transaction_requests(mock_get):
+    mock_get.return_value.json.return_vale = {"Valute": {"USD": {"Value": 99.018}}}
+    assert sum_transaction(r"c:\python\project\home_work\data\operations.json") == 4974829.120000002

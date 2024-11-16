@@ -29,5 +29,3 @@ def sum_transaction(local_json_file, coin="RUB") -> float:
             continue
     return sum
 
-
-print(sum_transaction(r"c:\python\project\home_work\data\operations.json"))
