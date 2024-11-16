@@ -33,4 +33,3 @@ def card_number_generator(start: int = 0, stop: int = 5, step: int = 1) -> str:
             blocks = [number_card[0:4], number_card[4:8], number_card[8:12], number_card[12:16]]
             number_card_blocks = " ".join(blocks)
             yield number_card_blocks
-

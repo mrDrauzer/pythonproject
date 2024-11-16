@@ -18,4 +18,3 @@ def sort_by_date(list_operations: list[dict], ascending: bool = True) -> list[di
     """
     sort_by_date = sorted(list_operations, key=lambda x: x.get("date", 0), reverse=not ascending)
     return sort_by_date
-
