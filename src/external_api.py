@@ -28,4 +28,3 @@ def sum_transaction(local_json_file, coin="RUB") -> float:
         else:
             continue
     return sum
-
