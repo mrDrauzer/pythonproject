@@ -1,7 +1,4 @@
 import pytest
-import unittest
-import sys
-
 
 from unittest.mock import patch
 from functools import wraps
@@ -9,7 +6,7 @@ from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
-from src.decorators import log, logfile
+from src.decorators import log
 from src.utils import open_json
 from src.external_api import sum_transaction
 
@@ -219,6 +216,7 @@ def test_log_output(capsys):
     @log()
     def my_function_2():
         return
+
     my_function_2()
 
     def decorator(func):
@@ -226,6 +224,7 @@ def test_log_output(capsys):
         def wrapper(*args, **kwargs):
             captured = capsys.readouterr()
             assert captured.out == f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
+
         return wrapper
 
     return decorator
@@ -292,19 +291,25 @@ def test_exception_typeerror():
         my_sum(1, 0)
         with open("log.txt") as f:
             row = f.read().split("\n")[0]
-        assert row == """Calling function my_sum with args (1, 0) and kwargs {}
+        assert (
+            row
+            == """Calling function my_sum with args (1, 0) and kwargs {}
 Error: my_sum() missing 1 required positional argument: 'c'
 Input parameters: (1, 0) {}"""
+        )
+
 
 def test_open_json():
     row = open_json(1)
     assert row == "[]"
 
+
 def test_sum_transaction():
     row = sum_transaction(1)
     assert row == 0.0
 
-@patch('requests.get')
+
+@patch("requests.get")
 def test_sum_transaction_requests(mock_get):
     mock_get.return_value.json.return_vale = {"Valute": {"USD": {"Value": 99.018}}}
     assert sum_transaction(r"c:\python\project\home_work\data\operations.json") == 4974829.120000002

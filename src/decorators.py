@@ -25,7 +25,7 @@ def log(filename=None):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if filename != None:
+            if filename != (None):
                 conets = f"Calling function {func.__name__} with args {args} and kwargs {kwargs}\n"
                 with open(filename, "w") as file:
                     file.write(conets)

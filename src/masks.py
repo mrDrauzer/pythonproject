@@ -32,8 +32,8 @@ def get_mask_card_number(card_number: int) -> str:
         blocks = [hidden_number[0:4], hidden_number[4:8], hidden_number[8:12], hidden_number[12:16]]
         logger_card_number.debug(f"Card number: {" ".join(blocks)}")
         return " ".join(blocks)
-    except Error:
-        logger_card_number.error((f"Произошла ошибка"))
+    except ValueError:
+        logger_card_number.error(("Произошла ошибка"))
         print("ошибка")
         return ""
 
@@ -48,7 +48,7 @@ def get_mask_account(account_number: int) -> str:
         hidden_number = "**" + account_number_txt[-4:]
         logger_mask_account.debug(f"Account number: {hidden_number}")
         return hidden_number
-    except Error:
-        logger_mask_account.error((f"Произошла ошибка"))
+    except ValueError:
+        logger_mask_account.error(("Произошла ошибка"))
         print("ошибка")
         return ""

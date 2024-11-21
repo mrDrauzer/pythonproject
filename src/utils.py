@@ -17,7 +17,7 @@ logger.addHandler(file_handle)
 def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")):
     """Принимат на вход сслыку на файл JSON выдает список словарей"""
     try:
-        logger.debug(f"Выполнение чтения JSON")
+        logger.debug("Выполнение чтения JSON")
         if not os.path.exists(local_json_file):
             print(f"Файл {local_json_file} не найден")
             return "[]"
@@ -26,7 +26,7 @@ def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "dat
                 data = json.load(f)
                 return data
     except JSONDecodeError:
-        logger.error((f"Произошла ошибка"))
+        logger.error(("Произошла ошибка"))
         print("Фаил пустой")
         return "[]"
 
