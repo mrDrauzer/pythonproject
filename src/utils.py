@@ -29,27 +29,3 @@ def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "dat
         logger.error(("Произошла ошибка"))
         print("Фаил пустой")
         return "[]"
-
-
-# Пример использования
-# current_dir = os.path.dirname(__file__)  # Текущий каталог скрипта
-# json_file = os.path.join(current_dir, "data", "operations.json")  # Относительный путь к файлу
-
-# print(open_json(r'c:\python\project\home_work\data\operations.jso'))
-
-# current_dir = os.path.dirname(__file__),   # Текущий каталог скрипта
-
-json_file = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")  # Относительный путь к файлу
-print(open_json())
-print(open_json(json_file))
-print(json_file)
-print(open_json(os.path.join(os.path.dirname(__file__), "..", "data", "empti.json")))
-
-# local_json_file = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")
-# if not os.path.exists(local_json_file):
-
-if __name__ == "__main__":
-    card_number = 1234567890
-    account_number = 9876543210
-    print(open_json(2))
-    print(open_json(2))
