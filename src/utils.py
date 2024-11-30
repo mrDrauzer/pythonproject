@@ -29,3 +29,14 @@ def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "dat
         logger.error(("Произошла ошибка"))
         print("Фаил пустой")
         return "[]"
+
+
+def open_csv(local_csv_file=os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")):
+    """Принимат на вход сслыку на файл CSV выдает список словарей"""
+    return "[]"
+
+
+
+def open_excel(local_excel_file=os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")):
+    """Принимат на вход сслыку на файл CSV выдает список словарей"""
+    return "[]"
