@@ -65,6 +65,3 @@ def open_excel(local_excel_file=os.path.join(os.path.dirname(__file__), "..", "d
         print(f"Неизвестная ошибка при чтении файла {local_excel_file}: {e}")
         return "[]"
     return "[]"
-
-
-print(open_csv())
