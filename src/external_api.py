@@ -7,8 +7,8 @@ import requests
 def sum_transaction(local_json_file, coin="RUB") -> float:
     """Возрощат сумму транзакция в указанной волюье по умолчанию в рублях"""
     load_dotenv(".env")
-#    api_key = os.getenv("API_KEY")
-#    headers = {"API_KEY": api_key}
+    #    api_key = os.getenv("API_KEY")
+    #    headers = {"API_KEY": api_key}
     sum = 0.0
     transaction = open_json(local_json_file)
     usd_coin = requests.get("https://www.cbr-xml-daily.ru/daily_json.js").json()

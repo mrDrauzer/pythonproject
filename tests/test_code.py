@@ -1,13 +1,16 @@
+import os
 import pytest
+import pandas as pd
+import logging
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from functools import wraps
 from src.masks import get_mask_account, get_mask_card_number
 from src.widget import mask_account_card, get_date
 from src.processing import filter_by_state, sort_by_date
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from src.decorators import log
-from src.utils import open_json
+from src.utils import open_json, open_csv, open_excel
 from src.external_api import sum_transaction
 
 # from unittest.mock import patch
@@ -313,3 +316,14 @@ def test_sum_transaction():
 def test_sum_transaction_requests(mock_get):
     mock_get.return_value.json.return_vale = {"Valute": {"USD": {"Value": 99.018}}}
     assert sum_transaction(r"c:\python\project\home_work\data\operations.json") == 4974829.120000002
+
+@patch("utils.open", new_callable=Mock)
+def test_open_csv(mock_open_csv):
+     mock_open_csv.return_value.pandas.return_vale = Mock(read_text="""
+ name,age
+ John,30
+ Mary,25
+ """)
+
+ result = open_csv(local_csv_file)
+ assert result == {"name": "John", "age": 30}, {"name": "Mary", "age": 25}
