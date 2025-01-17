@@ -1,4 +1,6 @@
 from src.utils import open_json, open_csv, open_excel
+from src.processing import filter_by_state
+from numpy.f2py.f90mod_rules import options
 
 # Программа приветствует пользователя:
 # Программа: Привет! Добро пожаловать в программу работы
@@ -7,10 +9,10 @@ from src.utils import open_json, open_csv, open_excel
 # 1. Получить информацию о транзакциях из JSON-файла
 # 2. Получить информацию о транзакциях из CSV-файла
 # 3. Получить информацию о транзакциях из XLSX-файла
-from numpy.f2py.f90mod_rules import options
 
 
-def main(list_operations: list[dict], operation_status: str = "EXECUTED"):
+
+def main():
     print(f"""                                                                                                              
 8888888b.          d8b                   888    888 
 888   Y88b         Y8P                   888    888 
@@ -26,7 +28,6 @@ def main(list_operations: list[dict], operation_status: str = "EXECUTED"):
     options = [1, 2, 3, 0]
     while options:
         print(" 1. [JSON-файла]   2. [CSV-файла]   3. [XLSX-файла]    0. [Завершить работу]")
-        print(options)
         choice = input("Ваш выбор: ")
 
         # Проверка на ввод пользователя
@@ -42,16 +43,16 @@ def main(list_operations: list[dict], operation_status: str = "EXECUTED"):
         # Обработка выбора файла
         if int(choice) == 1:
             print("Вы выбрали JSON-файл. Обработка JSON-файла...")
-            list_transac (open_json())
-            pass
+            list_transac = open_json()
+
         elif int(choice) == 2:
             print("Вы выбрали CSV-файл. Обработка CSV-файла...")
             list_transac = open_csv()
-            pass
+
         elif int(choice) == 3:
             print("Вы выбрали XLSX-файл. Обработка XLSX-файла...")
             list_transac = open_excel()
-            pass
+
 
         elif list_transac == []:
             print("Программа завершена.")
@@ -62,7 +63,7 @@ def main(list_operations: list[dict], operation_status: str = "EXECUTED"):
             break
 
 
-    print(f"""
+        print(f"""
     Выберети статус, по которому необходимо выполнить фильтрацию.
 Доступные для фильтровки статусы:
 
@@ -70,27 +71,36 @@ def main(list_operations: list[dict], operation_status: str = "EXECUTED"):
     2.CANCELED [ОТМЕНЕНО]
     3.PENDING  [ОЖИДАЕТСЯ] """)
 
-    type_status = input()
-    options = [1, 2, 3, 0]
+        type_status = input().upper()
+        if type_status in ("1.0","1", "EXECUTED"):
+            operation_status = "EXECUTED"
+            print(filter_by_state(list_transac, operation_status))
 
-    print(f"""
+        elif type_status in ("2.0","2", "CANCELED"):
+            operation_status = "CANCELED"
+            print(filter_by_state(list_transac, operation_status))
+
+        elif type_status in ("3.0", "3", "PENDING"):
+            operation_status = "PENDING"
+            print(filter_by_state(list_transac, operation_status))
+        print(f"""
         Отсортировать операции по дате? Да/Нет
 
         1.ДА
         2.НЕТ """)
-    type_data_sorted = input()
+        type_data_sorted = input()
 
-    print(f"""Отсортировать по возрастанию или по убыванию?
+        print(f"""Отсортировать по возрастанию или по убыванию?
         1.По возрастанию
         2.По убыванию """)
-    data_sorted_updown = input()
+        data_sorted_updown = input()
 
-    print(f"""Выводить только рублевые тразакции? Да/Нет?
+        print(f"""Выводить только рублевые тразакции? Да/Нет?
         1.ДА
         2.НЕТ""")
-    data_currency = input()
+        data_currency = input()
 
-    print(f"""Отфильтровать список транзакций по определенному слову 
+        print(f"""Отфильтровать список транзакций по определенному слову 
 в описании? Да/Нет?
         1.ДА
         2.НЕТ""")

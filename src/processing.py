@@ -6,8 +6,16 @@ def filter_by_state(list_operations: list[dict], operation_status: str = "EXECUT
     """
     list_operations_state = []
     for operations in list_operations:
-        if operations["state"] in operation_status:
-            list_operations_state.append(operations)
+        if "state" in operations:
+            state_value = operations["state"]
+            if isinstance(state_value, str):
+                if state_value in operation_status:
+                    list_operations_state.append(operations)
+            else:
+                # Преобразуем значение в строку для корректного сравнения
+                state_value = str(state_value)
+                if state_value in operation_status:
+                    list_operations_state.append(operations)
     return list_operations_state
 
 
