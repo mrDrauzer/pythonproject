@@ -1,5 +1,6 @@
 from src.utils import open_json, open_csv, open_excel
-from src.processing import filter_by_state
+from src.processing import filter_by_state, sort_by_date
+
 from numpy.f2py.f90mod_rules import options
 
 # Программа приветствует пользователя:
@@ -66,13 +67,18 @@ def main():
         print(f"""
     Выберети статус, по которому необходимо выполнить фильтрацию.
 Доступные для фильтровки статусы:
-
+        
     1.EXECUTED [ВЫПОЛНЕНО]
     2.CANCELED [ОТМЕНЕНО]
     3.PENDING  [ОЖИДАЕТСЯ] """)
-
+        options_stat = ["1.0","1", "EXECUTED", "2.0","2","CANCELED", "3.0", "3", "PENDING"]
         type_status = input().upper()
-        if type_status in ("1.0","1", "EXECUTED"):
+
+        if type_status not in options_stat:
+            print(f"Такой вариант отсутствует. Выберите другой вариант.")
+            continue
+
+        elif type_status in ("1.0","1", "EXECUTED"):
             operation_status = "EXECUTED"
             print(filter_by_state(list_transac, operation_status))
 
@@ -83,17 +89,46 @@ def main():
         elif type_status in ("3.0", "3", "PENDING"):
             operation_status = "PENDING"
             print(filter_by_state(list_transac, operation_status))
+
         print(f"""
         Отсортировать операции по дате? Да/Нет
 
         1.ДА
         2.НЕТ """)
-        type_data_sorted = input()
 
-        print(f"""Отсортировать по возрастанию или по убыванию?
-        1.По возрастанию
-        2.По убыванию """)
-        data_sorted_updown = input()
+        options_data_sorted = ["1.0", "1", "YES", "ДА", "2.0", "2", "НЕТ", "NO"]
+        data_sorted = input().upper()
+
+        if data_sorted not in options_data_sorted:
+            print(f"Такой вариант отсутствует. Выберите другой вариант.")
+            continue
+
+        if data_sorted in ("2.0","2", "CANCELED"):
+            list_transac = filter_by_state(list_transac, operation_status)
+            print(list_transac )
+
+
+
+        if data_sorted in ("1.0", "1",  "YES"):
+            print(f"""Отсортировать по возрастанию или по убыванию?
+            1.По возрастанию
+            2.По убыванию """)
+
+            options_sorted = ["1.0", "1", "ПО ВОЗРАСТАНИЮ", "2.0", "2", "ПО УБЫВАНИЮ"]
+
+            type_data_sorted = input().upper()
+            if type_data_sorted not in options_sorted:
+                print(f"Такой вариант отсутствует. Выберите другой вариант.")
+                continue
+
+            elif type_data_sorted in ("1.0", "1", "ПО ВОЗРАСТАНИЮ"):
+                list_transac = (sort_by_date(filter_by_state(list_transac, operation_status)), False)
+                print(list_transac)
+
+            elif type_data_sorted in ("2.0", "2", "ПО УБЫВАНИЮ"):
+                list_transac = sort_by_date(filter_by_state(list_transac, operation_status))
+                print(list_transac)
+
 
         print(f"""Выводить только рублевые тразакции? Да/Нет?
         1.ДА
