@@ -80,15 +80,15 @@ def main():
 
         elif type_status in ("1.0","1", "EXECUTED"):
             operation_status = "EXECUTED"
-            print(filter_by_state(list_transac, operation_status))
+            #print(filter_by_state(list_transac, operation_status))
 
         elif type_status in ("2.0","2", "CANCELED"):
             operation_status = "CANCELED"
-            print(filter_by_state(list_transac, operation_status))
+            #print(filter_by_state(list_transac, operation_status))
 
         elif type_status in ("3.0", "3", "PENDING"):
             operation_status = "PENDING"
-            print(filter_by_state(list_transac, operation_status))
+            #print(filter_by_state(list_transac, operation_status))
 
         print(f"""
         Отсортировать операции по дате? Да/Нет
@@ -105,9 +105,7 @@ def main():
 
         if data_sorted in ("2.0","2", "CANCELED"):
             list_transac = filter_by_state(list_transac, operation_status)
-            print(list_transac )
-
-
+            #print(list_transac )
 
         if data_sorted in ("1.0", "1",  "YES"):
             print(f"""Отсортировать по возрастанию или по убыванию?
@@ -115,36 +113,47 @@ def main():
             2.По убыванию """)
 
             options_sorted = ["1.0", "1", "ПО ВОЗРАСТАНИЮ", "2.0", "2", "ПО УБЫВАНИЮ"]
-
             type_data_sorted = input().upper()
+
             if type_data_sorted not in options_sorted:
                 print(f"Такой вариант отсутствует. Выберите другой вариант.")
                 continue
 
             elif type_data_sorted in ("1.0", "1", "ПО ВОЗРАСТАНИЮ"):
                 list_transac = (sort_by_date(filter_by_state(list_transac, operation_status)), False)
-                print(list_transac)
+                #print(list_transac)
 
             elif type_data_sorted in ("2.0", "2", "ПО УБЫВАНИЮ"):
                 list_transac = sort_by_date(filter_by_state(list_transac, operation_status))
-                print(list_transac)
+                #print(list_transac)
 
 
         print(f"""Выводить только рублевые тразакции? Да/Нет?
         1.ДА
         2.НЕТ""")
-        data_currency = input()
+        currency_choice = input().upper()
 
-        print(f"""Отфильтровать список транзакций по определенному слову 
-в описании? Да/Нет?
-        1.ДА
-        2.НЕТ""")
+        if currency_choice in ("1.0", "ДА", "YES"):
+            list_transac = [t for t in list_transac if t.get("currency") == "RUB"]
+            #print(list_transac)
 
-    print(f"""Программа: Не найдено ни одной транзакции, подходящей под ваши
-условия фильтрации""")
+        print(f"""Отфильтровать список транзакций по определенному слову в описании? Да/Нет?
+                1.ДА
+                2.НЕТ""")
+        filter_choice = input().upper()
+
+        if filter_choice in ("1.0", "1", "ДА", "YES"):
+            keyword = input("Введите слово для фильтрации: ")
+            list_transac = [t for t in list_transac if keyword.lower() in t.get("description", "").lower()]
+            #print(list_transac)
+
+        #if filter_choice in ("2.0", "2", "НЕТ", "NO"):
+            #print(list_transac)
+
+        if not list_transac:
+            print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
+
+    return list_transac
 
 
-    return
-
-
-main()
+print(main())
