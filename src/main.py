@@ -1,5 +1,22 @@
 from src.utils import open_json, open_csv, open_excel
 from src.processing import filter_by_state, sort_by_date
+from collections import Counter
+import re
+
+
+def count_operations_by_category(operations, categories):
+    """
+    Подсчитывает количество операций по заданным категориям.
+
+    :param operations: Список словарей с операциями.
+    :param categories: Список категорий для подсчёта.
+    :return: Словарь вида {"категория_1": 2, "категория_2": 3}.
+    """
+    category_counter = Counter()
+    for operation in operations:
+        if 'category' in operation and operation['category'] in categories:
+            category_counter[operation['category']] += 1
+    return dict(category_counter)
 
 
 def main():
@@ -122,7 +139,12 @@ def main():
         if filter_choice in ("1.0", "1", "ДА", "YES"):
             keyword = input("Введите слово для фильтрации: ")
             list_transac = [t for t in list_transac if
-                            isinstance(t, dict) and keyword.lower() in t.get("description", "").lower()]
+                            isinstance(t, dict) and re.search(keyword, t.get("description", ""), re.IGNORECASE)]
+
+        # Подсчёт операций по категориям
+        categories = ["перевод", "покупка", "оплата"]  # Пример списка категорий
+        category_counts = count_operations_by_category(list_transac, categories)
+        print("Количество операций по категориям:", category_counts)
 
         # Вывод результата
         if not list_transac:
