@@ -1,15 +1,14 @@
 import json
 import os
 import logging
+import pandas as pd
 from json import JSONDecodeError
 
 
-logger = logging.getLogger("open_json")
+logger = logging.getLogger("utils")
 logger.setLevel(logging.DEBUG)
-file_handle = logging.FileHandler(
-    os.path.join(os.path.dirname(__file__), "..", "logs", "open_json.log"), encoding="utf-8"
-)
-file_formatter = logging.Formatter("%(asctime)s- #(name)s - %(levelname)s: %(message)s")
+file_handle = logging.FileHandler(os.path.join(os.path.dirname(__file__), "..", "logs", "utils.log"), encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s- %(name)s - %(levelname)s: %(message)s")
 file_handle.setFormatter(file_formatter)
 logger.addHandler(file_handle)
 
@@ -17,7 +16,7 @@ logger.addHandler(file_handle)
 def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")):
     """Принимат на вход сслыку на файл JSON выдает список словарей"""
     try:
-        logger.debug(f"Выполнение чтения JSON")
+        logger.debug("Выполнение чтения JSON")
         if not os.path.exists(local_json_file):
             print(f"Файл {local_json_file} не найден")
             return "[]"
@@ -26,30 +25,43 @@ def open_json(local_json_file=os.path.join(os.path.dirname(__file__), "..", "dat
                 data = json.load(f)
                 return data
     except JSONDecodeError:
-        logger.error((f"Произошла ошибка"))
+        logger.error(("Произошла ошибка"))
         print("Фаил пустой")
         return "[]"
 
 
-# Пример использования
-# current_dir = os.path.dirname(__file__)  # Текущий каталог скрипта
-# json_file = os.path.join(current_dir, "data", "operations.json")  # Относительный путь к файлу
+def open_csv(local_csv_file=os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")):
+    """Принимат на вход сслыку на файл CSV выдает список словарей"""
+    try:
+        logger.debug("Выполнение чтения CSV")
+        if not os.path.exists(local_csv_file):
+            print(f"Файл {local_csv_file} не найден")
+            return "[]"
+        else:
+            wine_reviews = pd.read_csv(local_csv_file, delimiter=';')
+            print(wine_reviews.shape)
+            return wine_reviews.to_dict("records")
+    except csv.Error as e:
+        logger.error(f"Ошибка чтения CSV файла {local_csv_file}: {e}")
 
-# print(open_json(r'c:\python\project\home_work\data\operations.jso'))
 
-# current_dir = os.path.dirname(__file__),   # Текущий каталог скрипта
-
-json_file = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")  # Относительный путь к файлу
-print(open_json())
-print(open_json(json_file))
-print(json_file)
-print(open_json(os.path.join(os.path.dirname(__file__), "..", "data", "empti.json")))
-
-# local_json_file = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")
-# if not os.path.exists(local_json_file):
-
-if __name__ == "__main__":
-    card_number = 1234567890
-    account_number = 9876543210
-    print(open_json(2))
-    print(open_json(2))
+def open_excel(local_excel_file=os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")):
+    """Принимат на вход сслыку на файл XLSX выдает список словарей"""
+    try:
+        logger.debug("Выполнение чтения excel")
+        if not os.path.exists(local_excel_file):  # поправить ниже
+            print(f"Файл {local_excel_file} не найден")
+            return "[]"
+        else:
+            wine_reviews = pd.read_excel(local_excel_file)
+            print(wine_reviews.head())
+            return wine_reviews.to_dict(orient="records")
+    except FileNotFoundError as e:
+        logger.error(("Произошла ошибка"))
+        print(f"Файл {local_excel_file} не найден: {e}")
+        return "[]"
+    except Exception as e:
+        logger.error(("Произошла ошибка"))
+        print(f"Неизвестная ошибка при чтении файла {local_excel_file}: {e}")
+        return "[]"
+    return "[]"
